@@ -304,4 +304,26 @@ class ProgressManager {
     if (level == 1) return true;
     return isEntryLevelCompleted(category, level - 1);
   }
+
+  // --- СЕКРЕТНЫЙ КОД ---
+  Future<void> activateSecretCode() async {
+    for (int i = 0; i < 7; i++) {
+      if (!completedSteps.contains('sec_${i}_main')) {
+        completedSteps.add('sec_${i}_main');
+      }
+      if (!completedSteps.contains('sec_${i}_sub')) {
+        completedSteps.add('sec_${i}_sub');
+      }
+      
+      String sectionName = sectionsInfo[i].title; 
+      for (int level = 1; level <= 4; level++) {
+        String key = _entryKey(sectionName, level);
+        _completedEntryLevels.add(key);
+      }
+    }
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList('completedSteps', completedSteps);
+    await prefs.setStringList('completedEntryLevels', _completedEntryLevels.toList());
+  }
 }

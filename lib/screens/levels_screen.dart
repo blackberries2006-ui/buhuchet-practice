@@ -119,9 +119,10 @@ class _LevelsScreenState extends State<LevelsScreen> {
                     style: const TextStyle(fontSize: 15, color: Colors.white70, height: 1.4),
                   ),
                   const SizedBox(height: 32),
+                  // --- ИСПРАВЛЕННАЯ КНОПКА ---
                   SizedBox(
                     width: double.infinity,
-                    height: 56,
+                    height: 60, // Фиксированная высота, чтобы текст точно влез
                     child: ElevatedButton(
                       onPressed: () {
                         Navigator.pop(ctx);
@@ -151,9 +152,15 @@ class _LevelsScreenState extends State<LevelsScreen> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
                         foregroundColor: const Color(0xFF7B61FF),
+                        padding: EdgeInsets.zero, // Убираем отступы, чтобы текст центрировался
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
                       ),
-                      child: const Text('Приступить', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      child: const Center(
+                        child: Text(
+                          'Приступить', 
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -280,7 +287,7 @@ class _LevelsScreenState extends State<LevelsScreen> {
                 ),
               ),
 
-            // Блок прогресса
+            // --- НОВЫЙ БЛОК ПРОГРЕССА (ШКАЛА) ---
             Container(
               margin: const EdgeInsets.only(bottom: 40),
               padding: const EdgeInsets.all(20),
@@ -289,24 +296,31 @@ class _LevelsScreenState extends State<LevelsScreen> {
                 borderRadius: BorderRadius.circular(24),
                 border: Border.all(color: isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.05)),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('Прогресс разделов', style: TextStyle(fontSize: 14, color: AppTheme.textGrey, fontWeight: FontWeight.bold)),
-                      const SizedBox(height: 4),
-                      Text(
-                        '$completedMain из $totalMain',
-                        style: TextStyle(fontSize: 18, color: isDark ? Colors.white : AppTheme.ink, fontWeight: FontWeight.bold),
-                      ),
-                    ],
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: LinearProgressIndicator(
+                      value: completedMain / totalMain,
+                      minHeight: 12,
+                      backgroundColor: isDark ? Colors.white12 : Colors.grey.shade200,
+                      valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF3B82F6)), // Синий цвет
+                    ),
                   ),
-                  const Icon(Icons.chevron_right_rounded, color: AppTheme.textGrey),
+                  const SizedBox(height: 12),
+                  Text(
+                    '$completedMain из $totalMain разделов',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: isDark ? Colors.white : AppTheme.ink,
+                    ),
+                  ),
                 ],
               ),
             ),
+            // ----------------------------------
 
             ListView.builder(
               shrinkWrap: true,
@@ -418,12 +432,12 @@ class _LevelsScreenState extends State<LevelsScreen> {
                         margin: const EdgeInsets.only(top: 12, bottom: 20),
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                         decoration: BoxDecoration(
-                          color: isCurrent ? step.color.withOpacity(0.1) : Colors.transparent, // Легкая заливка для текущего
+                          color: isCurrent ? step.color.withOpacity(0.1) : Colors.transparent,
                           borderRadius: BorderRadius.circular(100),
                           border: Border.all(
                             color: isCompleted 
-                                ? AppTheme.textGrey.withOpacity(0.5) // Для пройденных — серая рамка
-                                : (isUnlocked ? step.color : AppTheme.textGrey.withOpacity(0.3)), // Для закрытых — бледная
+                                ? AppTheme.textGrey.withOpacity(0.5)
+                                : (isUnlocked ? step.color : AppTheme.textGrey.withOpacity(0.3)),
                             width: 2,
                           ),
                         ),
@@ -434,8 +448,8 @@ class _LevelsScreenState extends State<LevelsScreen> {
                             fontSize: 12,
                             fontWeight: isCurrent ? FontWeight.bold : FontWeight.w500,
                             color: isCompleted 
-                                ? AppTheme.textGrey // Пройденные — серый текст
-                                : (isUnlocked ? step.color : AppTheme.textGrey.withOpacity(0.3)), // Текущие и закрытые
+                                ? AppTheme.textGrey
+                                : (isUnlocked ? step.color : AppTheme.textGrey.withOpacity(0.3)),
                           ),
                         ),
                       ),
