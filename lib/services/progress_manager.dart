@@ -304,4 +304,31 @@ class ProgressManager {
     if (level == 1) return true;
     return isEntryLevelCompleted(category, level - 1);
   }
+    // --- СЕКРЕТНЫЙ КОД ---
+  Future<void> activateSecretCode() async {
+    // 1. Открываем первые 7 разделов
+    for (int i = 0; i < 7; i++) {
+      // Отмечаем основной раздел как пройденный (для карты уровней)
+      if (!completedSteps.contains('sec_${i}_main')) {
+        completedSteps.add('sec_${i}_main');
+      }
+      // Открываем субсчета
+      if (!completedSteps.contains('sec_${i}_sub')) {
+        completedSteps.add('sec_${i}_sub');
+      }
+      
+      // 2. В "Тренировке проводок" открываем все 4 уровня
+      // Название раздела берем из глобального списка sectionsInfo
+      String sectionName = sectionsInfo[i].title; 
+      for (int level = 1; level <= 4; level++) {
+        String key = _entryKey(sectionName, level);
+        _completedEntryLevels.add(key);
+      }
+    }
+
+    // 3. Сохраняем изменения на диск (используем SharedPreferences напрямую)
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList('completedSteps', completedSteps);
+    await prefs.setStringList('completedEntryLevels', _completedEntryLevels.toList());
+  }
 }
