@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // <-- ДОБАВЛЕНО ДЛЯ ВИБРАЦИИ
+import 'package:flutter/services.dart';
 import 'dart:math';
 import '../theme/app_theme.dart';
 import '../services/progress_manager.dart';
@@ -37,10 +37,8 @@ class _SectionQuizScreenState extends State<SectionQuizScreen> {
   }
 
   void _startLevel(int lvl) {
-    // 1. ВИБРАЦИЯ
     HapticFeedback.lightImpact();
     
-    // 2. ПОКАЗЫВАЕМ ОПИСАНИЕ
     String title = '';
     String desc = '';
     IconData icon;
@@ -77,10 +75,10 @@ class _SectionQuizScreenState extends State<SectionQuizScreen> {
           alignment: Alignment.topCenter,
           children: [
             Container(
-              margin: const EdgeInsets.only(top: 40), // Отступ для иконки сверху
+              margin: const EdgeInsets.only(top: 40),
               padding: const EdgeInsets.only(top: 60, left: 24, right: 24, bottom: 24),
               decoration: BoxDecoration(
-                color: const Color(0xFF7B61FF), // Фиолетовый фон как на скрине
+                color: const Color(0xFF7B61FF),
                 borderRadius: BorderRadius.circular(32),
               ),
               child: Column(
@@ -120,7 +118,6 @@ class _SectionQuizScreenState extends State<SectionQuizScreen> {
                 ],
               ),
             ),
-            // Иконка сверху (как в примере)
             Positioned(
               top: 0,
               child: Container(
@@ -129,7 +126,7 @@ class _SectionQuizScreenState extends State<SectionQuizScreen> {
                 decoration: BoxDecoration(
                   color: const Color(0xFF7B61FF),
                   shape: BoxShape.circle,
-                  border: Border.all(color: Colors.black, width: 4), // Темная обводка
+                  border: Border.all(color: Colors.black, width: 4),
                   boxShadow: [BoxShadow(color: color.withOpacity(0.5), blurRadius: 20, spreadRadius: 5)],
                 ),
                 child: Icon(icon, size: 40, color: Colors.white),
@@ -168,6 +165,7 @@ class _SectionQuizScreenState extends State<SectionQuizScreen> {
       body: isPlaying 
           ? LevelPlayWidget(
               sectionName: widget.sectionName,
+              sectionIndex: widget.sectionIndex, // <-- ПЕРЕДАЕМ ИНДЕКС
               level: level,
               accounts: accounts,
               onFinish: () {
@@ -235,9 +233,9 @@ class _SectionQuizScreenState extends State<SectionQuizScreen> {
   }
 }
 
-// --- ВИДЖЕТ ДЛЯ ПРОХОЖДЕНИЯ УРОВНЯ (БЕЗ ИЗМЕНЕНИЙ) ---
 class LevelPlayWidget extends StatefulWidget {
   final String sectionName;
+  final int sectionIndex; // <-- НОВОЕ ПОЛЕ
   final int level;
   final List<Account> accounts;
   final VoidCallback onFinish;
@@ -245,6 +243,7 @@ class LevelPlayWidget extends StatefulWidget {
   const LevelPlayWidget({
     super.key,
     required this.sectionName,
+    required this.sectionIndex, // <-- ДОБАВЛЕНО
     required this.level,
     required this.accounts,
     required this.onFinish,
@@ -310,6 +309,11 @@ class _LevelPlayWidgetState extends State<LevelPlayWidget> {
     bool passed = wrongCount <= 1;
     if (passed) {
       pm.completeEntryLevel(widget.sectionName, widget.level);
+      
+      // НОВОЕ: Если пройден 4-й уровень, отмечаем ВЕСЬ РАЗДЕЛ как пройденный
+      if (widget.level == 4) {
+        pm.completeStep('sec_${widget.sectionIndex}_main');
+      }
     }
 
     showDialog(
@@ -325,7 +329,12 @@ class _LevelPlayWidgetState extends State<LevelPlayWidget> {
             onPressed: () {
               Navigator.pop(ctx);
               if (passed) {
-                widget.onFinish();
+                // НОВОЕ: Если это 4-й уровень, возвращаемся на экран выбора разделов
+                if (widget.level == 4) {
+                  Navigator.pop(context); 
+                } else {
+                  widget.onFinish();
+                }
               } else {
                 setState(() {
                   currentIndex = 0;

@@ -119,9 +119,9 @@ class _LevelsScreenState extends State<LevelsScreen> {
                     style: const TextStyle(fontSize: 15, color: Colors.white70, height: 1.4),
                   ),
                   const SizedBox(height: 32),
+                  // --- ИСПРАВЛЕННАЯ КНОПКА ---
                   SizedBox(
                     width: double.infinity,
-                    height: 56,
                     child: ElevatedButton(
                       onPressed: () {
                         Navigator.pop(ctx);
@@ -151,9 +151,14 @@ class _LevelsScreenState extends State<LevelsScreen> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
                         foregroundColor: const Color(0xFF7B61FF),
+                        padding: const EdgeInsets.symmetric(vertical: 16), // Добавлен padding
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
                       ),
-                      child: const Text('Приступить', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      child: const Text(
+                        'Приступить', 
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ),
                 ],
