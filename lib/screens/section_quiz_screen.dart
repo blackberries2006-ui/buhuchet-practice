@@ -98,9 +98,9 @@ class _SectionQuizScreenState extends State<SectionQuizScreen> {
                     style: const TextStyle(fontSize: 16, color: Colors.white70, height: 1.4),
                   ),
                   const SizedBox(height: 32),
-                  SizedBox(
+                                    SizedBox(
                     width: double.infinity,
-                    height: 56,
+                    height: 60,
                     child: ElevatedButton(
                       onPressed: () {
                         Navigator.pop(ctx);
@@ -112,9 +112,15 @@ class _SectionQuizScreenState extends State<SectionQuizScreen> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
                         foregroundColor: const Color(0xFF7B61FF),
+                        padding: EdgeInsets.zero,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
                       ),
-                      child: const Text('Начать', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      child: const Center(
+                        child: Text(
+                          'Начать', 
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                      ),
                     ),
                   ),
                 ],
