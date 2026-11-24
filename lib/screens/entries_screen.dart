@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'dart:async';
 import 'dart:math';
 import '../theme/app_theme.dart';
@@ -21,9 +22,7 @@ class Entry {
   });
 }
 
-// --- БАЗА ПРОВОДОК ПО РАЗДЕЛАМ ---
 final List<Entry> allEntries = [
-  // I. Долгосрочные активы
   Entry(dt: '08', kt: '60', description: 'Приобретение основного средства у поставщика', category: 'I. Долгосрочные активы', recommendation: 'счета 01, 02, 08'),
   Entry(dt: '01', kt: '08', description: 'Ввод основного средства в эксплуатацию', category: 'I. Долгосрочные активы', recommendation: 'счета 01, 02, 08'),
   Entry(dt: '08-4', kt: '60', description: 'Приобретение НМА у поставщика', category: 'I. Долгосрочные активы', recommendation: 'счета 01, 02, 04, 08'),
@@ -33,8 +32,6 @@ final List<Entry> allEntries = [
   Entry(dt: '20', kt: '02', description: 'Начисление амортизации основных средств', category: 'I. Долгосрочные активы', recommendation: 'счета 01, 02, 20'),
   Entry(dt: '91-4', kt: '01', description: 'Списание остаточной стоимости выбывшего ОС', category: 'I. Долгосрочные активы', recommendation: 'счета 01, 02, 91'),
   Entry(dt: '04', kt: '08', description: 'Создан веб-сайт (принят к учету как НМА)', category: 'I. Долгосрочные активы', recommendation: 'счета 01, 04, 08'),
-
-  // II. Производственные запасы
   Entry(dt: '10', kt: '60', description: 'Поступление материалов от поставщика', category: 'II. Производственные запасы', recommendation: 'счета 10, 18, 60'),
   Entry(dt: '20', kt: '10', description: 'Списание материалов в основное производство', category: 'II. Производственные запасы', recommendation: 'счета 10, 20'),
   Entry(dt: '10', kt: '71', description: 'Оприходованы материалы, приобретенные подотчетником', category: 'II. Производственные запасы', recommendation: 'счета 10, 71'),
@@ -42,24 +39,18 @@ final List<Entry> allEntries = [
   Entry(dt: '10', kt: '76-3', description: 'Признание претензии к поставщику за недостачу', category: 'II. Производственные запасы', recommendation: 'счета 10, 76'),
   Entry(dt: '10', kt: '60', description: 'Приобретение топлива по электронным картам', category: 'II. Производственные запасы', recommendation: 'счета 10, 60'),
   Entry(dt: '18', kt: '60', description: 'Отражен входной НДС по приобретенным материалам', category: 'II. Производственные запасы', recommendation: 'счета 10, 18, 60'),
-
-  // III. Затраты на производство
   Entry(dt: '20', kt: '70', description: 'Начислена зарплата работникам основного производства', category: 'III. Затраты на производство', recommendation: 'счета 20, 26, 70'),
   Entry(dt: '20', kt: '69', description: 'Начислены страховые взносы в ФСЗН', category: 'III. Затраты на производство', recommendation: 'счета 20, 69'),
   Entry(dt: '20', kt: '76-2', description: 'Начислены взносы в Белгосстрах', category: 'III. Затраты на производство', recommendation: 'счета 20, 76'),
   Entry(dt: '43', kt: '20', description: 'Выпуск готовой продукции из производства', category: 'III. Затраты на производство', recommendation: 'счета 20, 43'),
   Entry(dt: '20', kt: '26', description: 'Списаны общехозяйственные расходы', category: 'III. Затраты на производство', recommendation: 'счета 20, 26'),
   Entry(dt: '20', kt: '96', description: 'Формирование резерва предстоящих платежей', category: 'III. Затраты на производство', recommendation: 'счета 20, 96'),
-
-  // IV. Готовая продукция и товары
   Entry(dt: '62', kt: '90-1', description: 'Отражена выручка от реализации покупателю', category: 'IV. Готовая продукция и товары', recommendation: 'счета 43, 62, 90'),
   Entry(dt: '90-4', kt: '43', description: 'Списана себестоимость реализованной продукции', category: 'IV. Готовая продукция и товары', recommendation: 'счета 43, 90'),
   Entry(dt: '90-2', kt: '68-2', description: 'Начислен НДС с выручки от реализации', category: 'IV. Готовая продукция и товары', recommendation: 'счета 68, 90'),
   Entry(dt: '90-5', kt: '26', description: 'Списаны управленческие расходы на реализацию', category: 'IV. Готовая продукция и товары', recommendation: 'счета 26, 90'),
   Entry(dt: '51', kt: '62', description: 'Зачислен аванс от покупателя на расчетный счет', category: 'IV. Готовая продукция и товары', recommendation: 'счета 51, 62'),
   Entry(dt: '76-5', kt: '68-2', description: 'Начислен НДС с полученного аванса', category: 'IV. Готовая продукция и товары', recommendation: 'счета 68, 76'),
-
-  // V. Денежные средства
   Entry(dt: '50', kt: '51', description: 'Снятие наличных с расчетного счета в кассу', category: 'V. Денежные средства', recommendation: 'счета 50, 51'),
   Entry(dt: '51', kt: '50', description: 'Внесение наличных из кассы на расчетный счет', category: 'V. Денежные средства', recommendation: 'счета 50, 51'),
   Entry(dt: '71', kt: '50', description: 'Выдача подотчетному лицу из кассы', category: 'V. Денежные средства', recommendation: 'счета 50, 71'),
@@ -67,8 +58,6 @@ final List<Entry> allEntries = [
   Entry(dt: '60', kt: '51', description: 'Оплата поставщику с расчетного счета', category: 'V. Денежные средства', recommendation: 'счета 51, 60'),
   Entry(dt: '51', kt: '62', description: 'Поступление оплаты от покупателя на р/с', category: 'V. Денежные средства', recommendation: 'счета 51, 62'),
   Entry(dt: '91-4', kt: '51', description: 'Оплата банковских услуг за РКО', category: 'V. Денежные средства', recommendation: 'счета 51, 91'),
-
-  // VI. Расчеты
   Entry(dt: '70', kt: '68-4', description: 'Удержан подоходный налог из заработной платы', category: 'VI. Расчеты', recommendation: 'счета 68, 70'),
   Entry(dt: '70', kt: '50', description: 'Выплата заработной платы из кассы', category: 'VI. Расчеты', recommendation: 'счета 50, 70'),
   Entry(dt: '70', kt: '51', description: 'Выплата заработной платы с р/с', category: 'VI. Расчеты', recommendation: 'счета 51, 70'),
@@ -76,14 +65,10 @@ final List<Entry> allEntries = [
   Entry(dt: '68-3', kt: '51', description: 'Уплата налога на прибыль в бюджет', category: 'VI. Расчеты', recommendation: 'счета 51, 68'),
   Entry(dt: '51', kt: '66', description: 'Получен краткосрочный кредит на р/с', category: 'VI. Расчеты', recommendation: 'счета 51, 66'),
   Entry(dt: '60', kt: '66-1', description: 'Переоформление долга поставщику в краткосрочный кредит', category: 'VI. Расчеты', recommendation: 'счета 60, 66'),
-
-  // VII. Собственный капитал
   Entry(dt: '75-1', kt: '80', description: 'Формирование уставного капитала после регистрации', category: 'VII. Собственный капитал', recommendation: 'счета 75, 80'),
   Entry(dt: '75-2', kt: '68-4', description: 'Удержание подоходного налога с дивидендов', category: 'VII. Собственный капитал', recommendation: 'счета 68, 75'),
   Entry(dt: '84', kt: '82', description: 'Отчисления в резервный капитал из чистой прибыли', category: 'VII. Собственный капитал', recommendation: 'счета 82, 84'),
   Entry(dt: '86', kt: '98', description: 'Получение целевого финансирования', category: 'VII. Собственный капитал', recommendation: 'счета 86, 98'),
-
-  // VIII. Финансовые результаты
   Entry(dt: '99', kt: '68-3', description: 'Начисление налога на прибыль', category: 'VIII. Финансовые результаты', recommendation: 'счета 68, 99'),
   Entry(dt: '99', kt: '84', description: 'Списание чистой прибыли на нераспределенную', category: 'VIII. Финансовые результаты', recommendation: 'счета 84, 99'),
   Entry(dt: '84', kt: '99', description: 'Списание убытка за счет нераспределенной прибыли', category: 'VIII. Финансовые результаты', recommendation: 'счета 84, 99'),
@@ -112,7 +97,6 @@ class EntriesScreen extends StatefulWidget {
 
 class _EntriesScreenState extends State<EntriesScreen> {
   final pm = ProgressManager();
-
   String selectedCategory = 'I. Долгосрочные активы';
   int difficulty = 1;
   List<Entry> questions = [];
@@ -124,9 +108,7 @@ class _EntriesScreenState extends State<EntriesScreen> {
   Timer? timer;
   int secondsLeft = 30;
   bool gameStarted = false;
-
   List<String> currentOptions = [];
-
   final TextEditingController dtController = TextEditingController();
   final TextEditingController ktController = TextEditingController();
 
@@ -140,13 +122,10 @@ class _EntriesScreenState extends State<EntriesScreen> {
       );
       return;
     }
-
     difficulty = level;
     final rnd = Random(DateTime.now().microsecondsSinceEpoch);
     final pool = allEntries.where((e) => e.category == selectedCategory).toList();
-
     if (pool.isEmpty) return;
-
     pool.shuffle(rnd);
     questions = pool.take(min(questionCount, pool.length)).toList();
     currentIndex = 0;
@@ -163,23 +142,16 @@ class _EntriesScreenState extends State<EntriesScreen> {
   }
 
   void _prepareOptions() {
-    if (difficulty == 3) {
-      currentOptions = [];
-      return;
-    }
+    if (difficulty == 3) { currentOptions = []; return; }
     final q = questions[currentIndex];
     final rnd = Random(DateTime.now().microsecondsSinceEpoch + currentIndex * 1000);
     final pool = allEntries.where((e) => e.description != q.description).toList();
     pool.shuffle(rnd);
-
     List<String> opts = [];
     if (difficulty == 1) {
       opts = [q.description, pool.first.description];
     } else {
-      opts = [
-        'Дт ${q.dt} — Кт ${q.kt}',
-        ...pool.take(3).map((e) => 'Дт ${e.dt} — Кт ${e.kt}')
-      ];
+      opts = ['Дт ${q.dt} — Кт ${q.kt}', ...pool.take(3).map((e) => 'Дт ${e.dt} — Кт ${e.kt}')];
     }
     opts.shuffle(rnd);
     currentOptions = opts;
@@ -200,11 +172,7 @@ class _EntriesScreenState extends State<EntriesScreen> {
   }
 
   void _timeUp() {
-    setState(() {
-      isAnswered = true;
-      selected = null;
-      wrong++;
-    });
+    setState(() { isAnswered = true; selected = null; wrong++; });
     _nextAfterDelay();
   }
 
@@ -212,10 +180,8 @@ class _EntriesScreenState extends State<EntriesScreen> {
     if (isAnswered) return;
     timer?.cancel();
     final q = questions[currentIndex];
-
     final correctStr = difficulty == 2 ? 'Дт ${q.dt} — Кт ${q.kt}' : q.description;
     final isCorrect = option == correctStr;
-
     setState(() {
       isAnswered = true;
       selected = option;
@@ -228,21 +194,14 @@ class _EntriesScreenState extends State<EntriesScreen> {
     if (isAnswered) return;
     timer?.cancel();
     final q = questions[currentIndex];
-    
-    // Умная очистка ввода от пробелов
     final userDt = dtController.text.trim().replaceAll(' ', '');
     final userKt = ktController.text.trim().replaceAll(' ', '');
-    
-    // Умная проверка: отрезаем субсчет (все, что после дефиса)
     final cleanQdt = q.dt.split('-').first;
     final cleanQkt = q.kt.split('-').first;
     final cleanUserDt = userDt.split('-').first;
     final cleanUserKt = userKt.split('-').first;
-
-    // Засчитываем, если совпало полностью ИЛИ если совпал главный счет
     final isCorrect = (userDt == q.dt && userKt == q.kt) || 
                       (cleanUserDt == cleanQdt && cleanUserKt == cleanQkt);
-
     setState(() {
       isAnswered = true;
       if (isCorrect) correct++; else wrong++;
@@ -273,12 +232,10 @@ class _EntriesScreenState extends State<EntriesScreen> {
     timer?.cancel();
     final score = (correct / questions.length) * 100;
     final passed = score >= 80;
-
     if (passed) {
       await pm.completeEntryLevel(selectedCategory, difficulty);
       if (mounted) setState(() {});
     }
-
     if (!mounted) return;
     showDialog(
       context: context,
@@ -287,10 +244,7 @@ class _EntriesScreenState extends State<EntriesScreen> {
         backgroundColor: AppTheme.darkSurface,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         title: Text(passed ? '🎉 Отлично!' : '😕 Попробуй ещё', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-        content: Text(
-          'Правильно: $correct из ${questions.length}\n(${score.toStringAsFixed(0)}%)',
-          style: const TextStyle(fontSize: 16, color: AppTheme.textGrey),
-        ),
+        content: Text('Правильно: $correct из ${questions.length}\n(${score.toStringAsFixed(0)}%)', style: const TextStyle(fontSize: 16, color: AppTheme.textGrey)),
         actions: [
           TextButton(
             onPressed: () {
@@ -316,14 +270,9 @@ class _EntriesScreenState extends State<EntriesScreen> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final textColor = isDark ? Colors.white : AppTheme.ink;
-
     return Scaffold(
       backgroundColor: isDark ? AppTheme.darkCanvas : AppTheme.lightCanvas,
-      appBar: AppBar(
-        title: const Text('Тренировка проводок'),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
+      appBar: AppBar(title: const Text('Тренировка проводок'), backgroundColor: Colors.transparent, elevation: 0),
       body: !gameStarted ? _buildStartScreen(isDark, textColor) : _buildGame(isDark, textColor),
     );
   }
@@ -332,7 +281,6 @@ class _EntriesScreenState extends State<EntriesScreen> {
     String rec = 'счета из раздела';
     final firstEntry = allEntries.where((e) => e.category == selectedCategory).firstOrNull;
     if (firstEntry != null) rec = firstEntry.recommendation;
-
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -340,57 +288,32 @@ class _EntriesScreenState extends State<EntriesScreen> {
         children: [
           Text('Выбери раздел', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: textColor), textAlign: TextAlign.center),
           const SizedBox(height: 16),
-
           Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            alignment: WrapAlignment.center,
+            spacing: 8, runSpacing: 8, alignment: WrapAlignment.center,
             children: categories.map((cat) {
               final isSelected = selectedCategory == cat;
               return ChoiceChip(
-                label: Text(cat),
-                selected: isSelected,
-                selectedColor: AppTheme.primary.withOpacity(0.3),
-                labelStyle: TextStyle(
-                  color: isSelected ? AppTheme.primary : textColor,
-                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                ),
-                onSelected: (val) {
-                  setState(() {
-                    selectedCategory = cat;
-                  });
-                },
+                label: Text(cat), selected: isSelected, selectedColor: AppTheme.primary.withOpacity(0.3),
+                labelStyle: TextStyle(color: isSelected ? AppTheme.primary : textColor, fontWeight: isSelected ? FontWeight.bold : FontWeight.normal),
+                onSelected: (val) { setState(() { selectedCategory = cat; }); },
               );
             }).toList(),
           ),
-
           const SizedBox(height: 24),
-
           Container(
             padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: AppTheme.primary.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AppTheme.primary.withOpacity(0.3)),
-            ),
+            decoration: BoxDecoration(color: AppTheme.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(16), border: Border.all(color: AppTheme.primary.withOpacity(0.3))),
             child: Row(
               children: [
                 const Icon(Icons.lightbulb_outline, color: AppTheme.primary),
                 const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    'Перед началом рекомендуем повторить: $rec',
-                    style: TextStyle(color: textColor, fontSize: 14, fontWeight: FontWeight.w500),
-                  ),
-                ),
+                Expanded(child: Text('Перед началом рекомендуем повторить: $rec', style: TextStyle(color: textColor, fontSize: 14, fontWeight: FontWeight.w500))),
               ],
             ),
           ),
-
           const SizedBox(height: 32),
           Text('Выбери уровень', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: textColor), textAlign: TextAlign.center),
           const SizedBox(height: 20),
-
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -408,25 +331,79 @@ class _EntriesScreenState extends State<EntriesScreen> {
   Widget _buildLevelCircle(int level, String title, Color color, IconData icon, bool isDark, Color textColor) {
     bool isUnlocked = pm.isEntryLevelUnlocked(selectedCategory, level);
     bool isCompleted = pm.isEntryLevelCompleted(selectedCategory, level);
-
     Color currentColor = isUnlocked ? color : Colors.grey;
     IconData currentIcon = isUnlocked ? icon : Icons.lock;
 
+    String levelDesc = '';
+    if (level == 1) {
+      levelDesc = 'Вам будет показана проводка (Дт и Кт). Выберите правильное описание операции из двух вариантов.';
+    } else if (level == 2) {
+      levelDesc = 'Вам будет показано описание операции. Выберите правильные счета (Дт и Кт) из четырех вариантов.';
+    } else if (level == 3) {
+      levelDesc = 'Вам будет показано описание операции. Введите номера счетов (Дт и Кт) вручную.';
+    } else {
+      levelDesc = 'Вам предстоит составить проводки для реальной хозяйственной операции, рассчитать сальдо и вывести финансовый результат.';
+    }
+
     return GestureDetector(
       onTap: () {
-        if (level == 4) {
-          if (isUnlocked) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => TaskScreen(category: selectedCategory)),
-            ).then((_) => setState(() {}));
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Сначала пройди предыдущий уровень!')),
-            );
-          }
+        if (isUnlocked) {
+          HapticFeedback.lightImpact();
+          showDialog(
+            context: context,
+            builder: (ctx) => Dialog(
+              backgroundColor: Colors.transparent,
+              insetPadding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Stack(
+                alignment: Alignment.topCenter,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(top: 40),
+                    padding: const EdgeInsets.only(top: 60, left: 24, right: 24, bottom: 24),
+                    decoration: BoxDecoration(color: const Color(0xFF7B61FF), borderRadius: BorderRadius.circular(32)),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(title, textAlign: TextAlign.center, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white)),
+                        const SizedBox(height: 16),
+                        Text(levelDesc, textAlign: TextAlign.center, style: const TextStyle(fontSize: 15, color: Colors.white70, height: 1.4)),
+                        const SizedBox(height: 32),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 60,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(ctx);
+                              if (level == 4) {
+                                Navigator.push(context, MaterialPageRoute(builder: (_) => TaskScreen(category: selectedCategory))).then((_) => setState(() {}));
+                              } else {
+                                startGame(level);
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(backgroundColor: Colors.white, foregroundColor: const Color(0xFF7B61FF), padding: EdgeInsets.zero, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100))),
+                            child: Center(
+                              child: Text(level == 4 ? 'Начать задачу' : 'Начать уровень', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Positioned(
+                    top: 0,
+                    child: Container(
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(color: const Color(0xFF7B61FF), shape: BoxShape.circle, border: Border.all(color: Colors.black, width: 4), boxShadow: [BoxShadow(color: color.withOpacity(0.5), blurRadius: 20, spreadRadius: 5)]),
+                      child: Icon(icon, size: 40, color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
         } else {
-          startGame(level);
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Сначала пройди предыдущий уровень!')));
         }
       },
       child: Column(
@@ -437,38 +414,19 @@ class _EntriesScreenState extends State<EntriesScreen> {
               Container(
                 width: 75,
                 height: 75,
-                decoration: BoxDecoration(
-                  color: currentColor.withOpacity(isUnlocked ? 0.15 : 0.05),
-                  shape: BoxShape.circle,
-                  border: Border.all(color: currentColor.withOpacity(isUnlocked ? 1.0 : 0.3), width: 2),
-                ),
+                decoration: BoxDecoration(color: currentColor.withOpacity(isUnlocked ? 0.15 : 0.05), shape: BoxShape.circle, border: Border.all(color: currentColor.withOpacity(isUnlocked ? 1.0 : 0.3), width: 2)),
                 child: Icon(currentIcon, color: isUnlocked ? currentColor : Colors.grey, size: 32),
               ),
               if (isCompleted)
                 Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: const BoxDecoration(color: AppTheme.success, shape: BoxShape.circle),
-                    child: const Icon(Icons.check, color: Colors.white, size: 14),
-                  ),
+                  bottom: 0, right: 0,
+                  child: Container(padding: const EdgeInsets.all(4), decoration: const BoxDecoration(color: AppTheme.success, shape: BoxShape.circle), child: const Icon(Icons.check, color: Colors.white, size: 14)),
                 ),
             ],
           ),
           const SizedBox(height: 12),
-          Text(
-            title,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: isUnlocked ? textColor : Colors.grey,
-              fontSize: 14
-            )
-          ),
-          Text(
-            level == 1 ? '2 варианта' : (level == 2 ? '4 варианта' : (level == 3 ? 'Ввод' : 'Самолётик')),
-            style: const TextStyle(color: AppTheme.textGrey, fontSize: 11),
-          ),
+          Text(title, style: TextStyle(fontWeight: FontWeight.bold, color: isUnlocked ? textColor : Colors.grey, fontSize: 14)),
+          Text(level == 1 ? '2 варианта' : (level == 2 ? '4 варианта' : (level == 3 ? 'Ввод' : 'Самолётик')), style: const TextStyle(color: AppTheme.textGrey, fontSize: 11)),
         ],
       ),
     );
@@ -476,12 +434,9 @@ class _EntriesScreenState extends State<EntriesScreen> {
 
   Widget _buildGame(bool isDark, Color textColor) {
     if (questions.isEmpty) return const Center(child: Text('Нет проводок'));
-
     final q = questions[currentIndex];
     final showTimer = timePerQuestion > 0;
     final correctStr = difficulty == 2 ? 'Дт ${q.dt} — Кт ${q.kt}' : q.description;
-    
-    // ИСПРАВЛЕНО: Правильная проверка для ручного ввода (уровень 3)
     bool isCorrectAnswer = false;
     if (difficulty == 3) {
       final userDt = dtController.text.trim().replaceAll(' ', '');
@@ -490,9 +445,7 @@ class _EntriesScreenState extends State<EntriesScreen> {
       final cleanQkt = q.kt.split('-').first;
       final cleanUserDt = userDt.split('-').first;
       final cleanUserKt = userKt.split('-').first;
-      
-      isCorrectAnswer = (userDt == q.dt && userKt == q.kt) || 
-                        (cleanUserDt == cleanQdt && cleanUserKt == cleanQkt);
+      isCorrectAnswer = (userDt == q.dt && userKt == q.kt) || (cleanUserDt == cleanQdt && cleanUserKt == cleanQkt);
     } else {
       isCorrectAnswer = selected == correctStr;
     }
@@ -509,24 +462,15 @@ class _EntriesScreenState extends State<EntriesScreen> {
               if (showTimer)
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: secondsLeft <= 5 ? Colors.red.withOpacity(0.2) : AppTheme.primary.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text('⏱ $secondsLeft с', style: TextStyle(
-                    color: secondsLeft <= 5 ? Colors.red : AppTheme.primary,
-                    fontWeight: FontWeight.bold,
-                  )),
+                  decoration: BoxDecoration(color: secondsLeft <= 5 ? Colors.red.withOpacity(0.2) : AppTheme.primary.withOpacity(0.2), borderRadius: BorderRadius.circular(20)),
+                  child: Text('⏱ $secondsLeft с', style: TextStyle(color: secondsLeft <= 5 ? Colors.red : AppTheme.primary, fontWeight: FontWeight.bold)),
                 ),
             ],
           ),
           const SizedBox(height: 16),
           Container(
             padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: isDark ? AppTheme.darkSurface : Colors.white,
-              borderRadius: BorderRadius.circular(20),
-            ),
+            decoration: BoxDecoration(color: isDark ? AppTheme.darkSurface : Colors.white, borderRadius: BorderRadius.circular(20)),
             child: Column(
               children: [
                 if (difficulty == 1) ...[
@@ -556,7 +500,6 @@ class _EntriesScreenState extends State<EntriesScreen> {
                 if (opt == correctStr) { bg = AppTheme.success; txt = Colors.white; }
                 else if (isSelected) { bg = AppTheme.error; txt = Colors.white; }
               }
-
               return Padding(
                 padding: const EdgeInsets.only(bottom: 12),
                 child: GestureDetector(
@@ -564,11 +507,7 @@ class _EntriesScreenState extends State<EntriesScreen> {
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
                     padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-                    decoration: BoxDecoration(
-                      color: bg,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: isDark ? Colors.white.withOpacity(0.05) : Colors.black12),
-                    ),
+                    decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(16), border: Border.all(color: isDark ? Colors.white.withOpacity(0.05) : Colors.black12)),
                     child: Text(opt, textAlign: TextAlign.center, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: txt)),
                   ),
                 ),
@@ -622,17 +561,10 @@ class _EntriesScreenState extends State<EntriesScreen> {
               const SizedBox(height: 20),
               Container(
                 padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  // ТЕПЕРЬ ЦВЕТ РАБОТАЕТ ПРАВИЛЬНО
-                  color: isCorrectAnswer ? AppTheme.success.withOpacity(0.15) : AppTheme.error.withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(16),
-                ),
+                decoration: BoxDecoration(color: isCorrectAnswer ? AppTheme.success.withOpacity(0.15) : AppTheme.error.withOpacity(0.15), borderRadius: BorderRadius.circular(16)),
                 child: Column(
                   children: [
-                    Text(
-                      isCorrectAnswer ? 'Верно!' : 'Правильный ответ:',
-                      style: TextStyle(fontWeight: FontWeight.bold, color: isCorrectAnswer ? AppTheme.success : AppTheme.error),
-                    ),
+                    Text(isCorrectAnswer ? 'Верно!' : 'Правильный ответ:', style: TextStyle(fontWeight: FontWeight.bold, color: isCorrectAnswer ? AppTheme.success : AppTheme.error)),
                     const SizedBox(height: 8),
                     Text('Дт ${q.dt}  —  Кт ${q.kt}', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: textColor)),
                   ],
